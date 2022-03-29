@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
-#include <conio.h>
 #include <Windows.h>
 #include <string.h>
 
@@ -10,10 +9,6 @@
 	2) можно попробовать использовать стек/очередь для хранения нужных определений (то есть для массива definitions)
 	3) придумать, как сделать перегенерацию кроссворда
 	*/
-
-
-
-
 
 
 
@@ -41,22 +36,23 @@ int attempt_to_place_vert(int i, int j, int n, char symbol, char* word, char** a
 	if (start < 0 || end - 1 >= n) return 0; //неудача
 	k = 0;
 	for (int i = start; i < end; i++) {
-		if (word[k] == arr[i][j]) amount_same++;
+		if (word[k] == arr[i][j]) amount_same++;   //количество совпадений с уже стоящими буквами
 		if (amount_same > 2) return 0;
 		k++;
 	}
+	// проверка на возможность поставить
 	k = 0;
 	for (i = start; i < end; i++) {
-		if (arr[i][j] != '.' && arr[i][j] != word[k]) return 0;
+		if (arr[i][j] != ' ' && arr[i][j] != word[k]) return 0;
 		if (j - 1 > -1)
-			if (arr[i][j - 1] != '.' && arr[i][j] != word[k]) return 0;
+			if (arr[i][j - 1] != ' ' && arr[i][j] != word[k]) return 0;
 		if (j + 1 > -1)
-			if (arr[i][j + 1] != '.' && arr[i][j] != word[k]) return 0;
+			if (arr[i][j + 1] != ' ' && arr[i][j] != word[k]) return 0;
 		k++;
 	}
-	if (arr[end][j] != '.') return 0;
+	if (arr[end][j] != ' ') return 0;
 	if (start - 1 > -1)
-		if (arr[start - 1][j] != '.') return 0;
+		if (arr[start - 1][j] != ' ') return 0;
 	return 1; //успех
 }
 
@@ -72,22 +68,23 @@ int attempt_to_place_horiz(int i, int j, int m, char symbol, char* word, char** 
 	if (start < 0 || end - 1 >= m) return 0; //неудача
 	k = 0;
 	for (int j = start; j < end; j++) {
-		if (word[k] == arr[i][j]) amount_same++;
+		if (word[k] == arr[i][j]) amount_same++;    //количество совпадений с уже стоящими буквами
 		if (amount_same > 2) return 0;
 		k++;
 	}
+	// проверка на возможность поставить
 	k = 0;
 	for (j = start; j < end; j++) {
-		if (arr[i][j] != '.' && arr[i][j] != word[k]) return 0;
+		if (arr[i][j] != ' ' && arr[i][j] != word[k]) return 0;
 		if (i - 1 > -1)
-			if (arr[i - 1][j] != '.' && arr[i][j] != word[k]) return 0;
+			if (arr[i - 1][j] != ' ' && arr[i][j] != word[k]) return 0;
 		if (i + 1 > -1)
-			if (arr[i + 1][j] != '.' && arr[i][j] != word[k]) return 0;
+			if (arr[i + 1][j] != ' ' && arr[i][j] != word[k]) return 0;
 		k++;
 	}
-	if (arr[i][end] != '.') return 0;
+	if (arr[i][end] != ' ') return 0;
 	if (start - 1 > -1)
-		if (arr[i][start - 1] != '.') return 0;
+		if (arr[i][start - 1] != ' ') return 0;
 	return 1; //успех
 }
 
@@ -141,7 +138,7 @@ int main() {
 	}
 	for (i = 0; i < N; i++) {
 		for (j = 0; j < M; j++) {
-			crossword[i][j] = '.';
+			crossword[i][j] = ' ';
 		}
 	}
 
@@ -163,7 +160,7 @@ int main() {
 	for (count = 1; count < 11; count++) { //count - количество просмотренных слов
 		for (i = 0; i < N; i++) {
 			for (j = 0; j < M; j++) {
-				if (crossword[i][j] != '.') {
+				if (crossword[i][j] != ' ') {
 					if (poisk(crossword[i][j], base.words[count], N) == 1) {
 						if (attempt_to_place_vert(i, j, N, crossword[i][j], base.words[count], crossword) == 1) {
 							int k = 0; //проход по слову
